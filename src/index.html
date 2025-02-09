@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat em Tempo Real</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f9f9f9;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        #messages {
+            list-style-type: none;
+            padding: 10px;
+            background: #ffffff;
+            width: 100%;
+            max-width: 500px;
+            height: 300px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow-y: auto;
+        }
+
+        #messages li {
+            padding: 8px;
+            margin-bottom: 10px;
+            background-color: #e0f7fa;
+            border-radius: 4px;
+            color: #00796b;
+            word-wrap: break-word;
+        }
+
+        #chat-container {
+            display: flex;
+            width: 100%;
+            max-width: 500px;
+            margin-top: 10px;
+        }
+
+        #chat-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            outline: none;
+            font-size: 16px;
+        }
+
+        #send-button {
+            padding: 10px 15px;
+            background-color: #00796b;
+            color: white;
+            border: none;
+            margin-left: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #send-button:hover {
+            background-color: #005f4f;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Chat em Tempo Real</h1>
+    <ul id="messages"></ul>
+
+    <div id="chat-container">
+        <input type="text" id="chat-input" placeholder="Digite sua mensagem...">
+        <button id="send-button">Enviar</button>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+
+        const messages = document.getElementById('messages');
+        const button = document.getElementById('send-button');
+        const input = document.getElementById('chat-input');
+
+        button.addEventListener('click', () => {
+            if (input.value) {
+                socket.emit('message', input.value);
+                input.value = ''; // Limpa o campo após enviar
+            }
+        });
+
+        socket.on('message', (msg) => {
+            const li = document.createElement('li');
+            li.textContent = msg;
+            messages.appendChild(li);
+        });
+    </script>
+</body>
+</html>
